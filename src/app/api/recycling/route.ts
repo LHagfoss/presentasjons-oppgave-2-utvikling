@@ -4,41 +4,50 @@ import { prisma } from '@/lib/prisma';
 // GET /api/recycling
 // Henter resirkuleringsdata for en bruker
 export async function GET(request: NextRequest) {
-	try {
-		// I en ekte app ville vi hente bruker-ID fra en autentisert sesjon
-		// For demonstrasjonsformål bruker vi en fast bruker-ID
-		const userId = '1';
+    try {
+        // I en ekte app ville vi hente bruker-ID fra en autentisert sesjon
+        // For demonstrasjonsformål bruker vi en fast bruker-ID
+        const userId = '1';
+        // Hent første bruker fra databasen for demonstrasjon
+        const firstUser = await prisma.user.findFirst();
+        
+        if (!firstUser) {
+            return NextResponse.json(
+                { error: 'Ingen brukere funnet i systemet' },
+                { status: 404 }
+            );
+        }
 
-		// Hent bruker med resirkuleringsdata
-		const user = await prisma.user.findUnique({
-			where: { id: userId },
-			include: {
-				recyclingEntries: {
-					include: {
-						container: true,
-					},
-					orderBy: {
-						timestamp: 'desc',
-					},
-				},
-			},
-		});
+        // Hent bruker med resirkuleringsdata
+        const user = await prisma.user.findUnique({
+            where: { id: firstUser.id },
+            include: {
+                recyclingEntries: {
+                    include: {
+                        container: true,
+                    },
+                    orderBy: {
+                        timestamp: 'desc',
+                    },
+                },
+            },
+        });
 
-		if (!user) {
-			return NextResponse.json(
-				{ error: 'Bruker ikke funnet' },
-				{ status: 404 }
-			);
-		}
+        if (!user) {
+            return NextResponse.json(
+                { error: 'Bruker ikke funnet' },
+                { status: 404 }
+            );
+        }
 
-		return NextResponse.json({ user });
-	} catch (error) {
-		console.error('Feil ved henting av resirkuleringsdata:', error);
-		return NextResponse.json(
-			{ error: 'Feil ved henting av resirkuleringsdata' },
-			{ status: 500 }
-		);
-	}
+        return NextResponse.json({ user });
+    } catch (error) {
+        console.error('Feil ved henting av resirkuleringsdata:', error);
+        return NextResponse.json(
+            { error: 'Feil ved henting av resirkuleringsdata' },
+            { status: 500 }
+        );
+    }
 }
 
 // POST /api/recycling
