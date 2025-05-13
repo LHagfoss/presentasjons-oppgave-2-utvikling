@@ -22,7 +22,7 @@ Dette prosjektet er bygget med følgende teknologier:
 
 ## Oppgave 1: Datamodell for pantelotteri (Backend-struktur)
 
-![Datamodell for pantelotteri](./supabase.png)
+![Datamodell for pantelotteri](./public/supabase.png)
 
 For kommunens utviklingsprosjekt med panteordning for glass og metall har jeg utviklet følgende datamodell:
 
