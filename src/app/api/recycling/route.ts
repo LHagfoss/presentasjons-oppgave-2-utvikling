@@ -1,53 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// GET /api/recycling
-// Henter resirkuleringsdata for en bruker
 export async function GET(request: NextRequest) {
-    try {
-        // I en ekte app ville vi hente bruker-ID fra en autentisert sesjon
-        // For demonstrasjonsformål bruker vi en fast bruker-ID
-        const userId = '1';
-        // Hent første bruker fra databasen for demonstrasjon
-        const firstUser = await prisma.user.findFirst();
-        
-        if (!firstUser) {
-            return NextResponse.json(
-                { error: 'Ingen brukere funnet i systemet' },
-                { status: 404 }
-            );
-        }
+	try {
+		const { searchParams } = new URL(request.url);
+		const userId = searchParams.get('userId');
 
-        // Hent bruker med resirkuleringsdata
-        const user = await prisma.user.findUnique({
-            where: { id: firstUser.id },
-            include: {
-                recyclingEntries: {
-                    include: {
-                        container: true,
-                    },
-                    orderBy: {
-                        timestamp: 'desc',
-                    },
-                },
-            },
-        });
+		const userQuery = userId
+			? prisma.user.findUnique({ where: { id: userId } })
+			: prisma.user.findFirst();
 
-        if (!user) {
-            return NextResponse.json(
-                { error: 'Bruker ikke funnet' },
-                { status: 404 }
-            );
-        }
+		const user = await userQuery;
 
-        return NextResponse.json({ user });
-    } catch (error) {
-        console.error('Feil ved henting av resirkuleringsdata:', error);
-        return NextResponse.json(
-            { error: 'Feil ved henting av resirkuleringsdata' },
-            { status: 500 }
-        );
-    }
+		if (!user) {
+			return NextResponse.json(
+				{
+					error: userId
+						? 'Bruker ikke funnet'
+						: 'Ingen brukere funnet i systemet',
+				},
+				{ status: 404 }
+			);
+		}
+
+		const userData = await prisma.user.findUnique({
+			where: { id: user.id },
+			include: {
+				recyclingEntries: {
+					include: {
+						container: true,
+					},
+					orderBy: {
+						timestamp: 'desc',
+					},
+				},
+			},
+		});
+
+		return NextResponse.json({ user: userData });
+	} catch (error) {
+		console.error('Feil ved henting av resirkuleringsdata:', error);
+		return NextResponse.json(
+			{ error: 'Feil ved henting av resirkuleringsdata' },
+			{ status: 500 }
+		);
+	}
 }
 
 // POST /api/recycling
@@ -116,6 +113,40 @@ export async function POST(request: NextRequest) {
 		console.error('Feil ved registrering av resirkulering:', error);
 		return NextResponse.json(
 			{ error: 'Feil ved registrering av resirkulering' },
+			{ status: 500 }
+		);
+	}
+}
+
+export async function DELETE(request: NextRequest) {
+	try {
+		const { searchParams } = new URL(request.url);
+		const entryId = searchParams.get('id');
+
+		if (!entryId) {
+			return NextResponse.json(
+				{ error: 'Entry ID is required' },
+				{ status: 400 }
+			);
+		}
+
+		await prisma.lotteryTicket.deleteMany({
+			where: {
+				recyclingEntryId: entryId,
+			},
+		});
+
+		const deletedEntry = await prisma.recyclingEntry.delete({
+			where: {
+				id: entryId,
+			},
+		});
+
+		return NextResponse.json({ success: true, deletedEntry });
+	} catch (error) {
+		console.error('Error deleting recycling entry:', error);
+		return NextResponse.json(
+			{ error: 'Failed to delete recycling entry' },
 			{ status: 500 }
 		);
 	}

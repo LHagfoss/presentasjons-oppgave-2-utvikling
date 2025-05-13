@@ -220,7 +220,10 @@ export default function RecyclingOverview() {
 
 			<footer className="bg-gray-100 p-4 mt-8">
 				<div className="container mx-auto text-center text-gray-500 text-sm">
-					© 2025 Kommunens Resirkuleringsapp
+					© 2025{' '}
+					<a href="http://lhagfoss.com/" className="underline">
+						Lucas Thanawat Hagfoss
+					</a>
 				</div>
 			</footer>
 		</div>

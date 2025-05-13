@@ -156,6 +156,29 @@ async function main() {
 	console.log('Seeding fullført!');
 }
 
+await prisma.recyclingContainer.createMany({
+	data: [
+		{
+			location: 'Storgata 1',
+			area: 'Sentrum',
+			capacity: 1000,
+			currentFillLevel: 0
+		},
+		{
+			location: 'Parkveien 8',
+			area: 'Vest',
+			capacity: 1000,
+			currentFillLevel: 0
+		},
+		{
+			location: 'Sjøgata 12',
+			area: 'Øst',
+			capacity: 1000,
+			currentFillLevel: 0
+		}
+	]
+});
+
 main()
 	.catch((e) => {
 		console.error('Feil under seeding:', e);

@@ -1,11 +1,14 @@
 # Pantelotteri App – Resirkuleringssystem for kommunen
 
-Dette prosjektet er en digital løsning for pantelotteri, utviklet med Next.js, 
-Prisma, Supabase, og Tailwind CSS. Systemet lar innbyggere resirkulere glass og metall, 
-samtidig som de deltar i lotterier basert på sine innleveringer. Her finner du en detaljert 
+Dette prosjektet er en digital løsning for pantelotteri, utviklet med Next.js,
+Prisma, Supabase, og Tailwind CSS. Systemet lar innbyggere resirkulere glass og metall,
+samtidig som de deltar i lotterier basert på sine innleveringer. Her finner du en detaljert
 oversikt over datamodellen, frontend-implementasjonen og backend-integrasjonen.
 
 # Presentasjonsoppgave 2 i Utvikling, våren 2025
+
+![Screenshot 1 av Dashboard](./public/screenshot-1.png)
+![Screenshot 2 av Dashboard](./public/screenshot-2.png)
 
 ## Teknologivalg
 
@@ -102,4 +105,5 @@ Jeg har implementert API-endepunkter for å hente brukerdata, resirkuleringshist
 - React dokumentasjon: https://react.dev/reference/react
 
 ## Lisens
+
 Dette prosjektet er lisensiert under MIT-lisensen. Se LICENSE.md for mer informasjon.
