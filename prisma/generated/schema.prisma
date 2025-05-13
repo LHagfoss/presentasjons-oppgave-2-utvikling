@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma/generated"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               String           @id @default(uuid())
+  name             String
+  email            String           @unique
+  phoneNumber      String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  barcode          String           @unique
+  recyclingEntries RecyclingEntry[]
+  lotteryTickets   LotteryTicket[]
+  wonLotteries     Lottery[]        @relation("LotteryWinner")
+}
+
+model RecyclingContainer {
+  id               String           @id @default(uuid())
+  location         String
+  area             String
+  capacity         Int
+  currentFillLevel Int              @default(0)
+  lastEmptied      DateTime?
+  recyclingEntries RecyclingEntry[]
+}
+
+model RecyclingEntry {
+  id             String             @id @default(uuid())
+  userId         String
+  containerId    String
+  itemCount      Int
+  timestamp      DateTime           @default(now())
+  itemType       String // "glass" eller "metall"
+  user           User               @relation(fields: [userId], references: [id])
+  container      RecyclingContainer @relation(fields: [containerId], references: [id])
+  lotteryTickets LotteryTicket[]
+}
+
+model Lottery {
+  id             String          @id @default(uuid())
+  drawDate       DateTime
+  status         String // "planlagt" eller "gjennomført"
+  winnerId       String?
+  winner         User?           @relation("LotteryWinner", fields: [winnerId], references: [id])
+  lotteryTickets LotteryTicket[]
+}
+
+model LotteryTicket {
+  id               String         @id @default(uuid())
+  userId           String
+  lotteryId        String
+  recyclingEntryId String
+  createdAt        DateTime       @default(now())
+  user             User           @relation(fields: [userId], references: [id])
+  lottery          Lottery        @relation(fields: [lotteryId], references: [id])
+  recyclingEntry   RecyclingEntry @relation(fields: [recyclingEntryId], references: [id])
+}
