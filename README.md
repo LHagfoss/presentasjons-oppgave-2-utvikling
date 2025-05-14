@@ -7,8 +7,8 @@ oversikt over datamodellen, frontend-implementasjonen og backend-integrasjonen.
 
 # Presentasjonsoppgave 2 i Utvikling, våren 2025
 
-![Screenshot 1 av Dashboard](./public/screenshot-1.png)
-![Screenshot 2 av Dashboard](./public/screenshot-2.png)
+![Screenshot 1 av Dashboard](./public/sitescreenshot-1.png)
+![Screenshot 2 av Dashboard](./public/sitescreenshot-2.png)
 
 ## Teknologivalg
 
